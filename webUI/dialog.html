@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>web组件</title>
+		<link rel="stylesheet" type="text/css" href="css/reset.css"/>
+		<style type="text/css">
+			html{
+				font-size: 28px;
+			}
+			body{
+				font-size: 62.5%;
+			}
+			
+			.disloag-outer{
+				width: 100%;
+				height: 100vh;
+				position: fixed;
+				top: 0;
+				background: rgba(0,0,0,0.6);
+				display: -webkit-flex;
+				-webkit-align-items: center;
+				-webkit-justify-content: center;
+				color: #eee;
+			}
+			.dialog-container{
+				background: rgba(0,0,0,.6);
+				font-size: 1em;
+				text-align: center;
+				border-radius: .5em;
+				padding: 1em;
+			}
+			.dialog-top{
+				width: 3em;
+				height: 3em;
+				display: flex;
+				margin: 0 auto;
+				-webkit-justify-content: center;
+				-webkit-align-items: center;
+				background: url(img/waiting.gif) no-repeat center center;
+				background-size: 2em;
+			}
+			.dialog-top.finish{
+				background: url(img/finish.png) no-repeat center center;
+				background-size: 2em;
+			}
+			.dialog-top.warning{
+				background: url(img/warning.png) no-repeat center center;
+				background-size: 2em;
+			}
+			
+			.dialog-mid{
+				margin: 1em;
+			}
+			.dialog-top img{
+				width: 2em;
+				height: 2em;
+			}
+			.dialog-bot{
+				margin: .5em 0 0;
+			}
+			button{
+				padding: .8em 1.5em;
+				border-radius: .5em;
+				outline: 0 none;
+				border: 0;
+				color: #eee;
+				margin: 0 .5em;
+				cursor: pointer;
+			}
+			button.green{
+				background: rgba(2,202,200,0.8);
+			}
+			button.red{
+				background: rgba(251,23,50,0.8);
+			}
+			
+			.bb{
+				color: #333;
+				margin: 1em;
+			}
+		</style>
+		
+	</head>
+	<body>
+		
+		
+		<!--<div class="disloag-outer">
+			<div class="dialog-container">
+				<div class="dialog-top waiting"></div>
+				<div class="dialog-mid">您是否要删除该选项</div>
+				<div class="dialog-bot">
+					<button class="green">确定</button>
+					<button>待定</button>
+					<button class="red">取消</button>
+				</div>
+			</div>
+		</div>-->
+		<div class="test" style="display: flex;flex-direction: column;align-items: center;">
+			
+			
+			<button class="btn1 bb">没有传递任何参数</button>
+			<button class="btn2 bb">弹出一个不带任何按钮的警告框</button>
+			<button class="btn3 bb">弹出一个有确认和取消按钮的完成框</button>
+			<button class="btn4 bb">弹出一个警告框，点击不关闭</button>
+			<button class="btn5 bb">弹出一个组合框</button>
+			<button class="btn6 bb">弹出一个确认和删除的框，点击确认后弹出加载框，2秒后自动关闭，点击删除把上一次框关闭</button>
+		</div>
+		<!--<script type="text/javascript" src="js/phoneadaptation.js"></script>-->
+		<script type="text/javascript" src="js/zepto.js"></script>
+		<script type="text/javascript" src="js/dialog.js"></script>
+		<script type="text/javascript">
+			$('.btn1').click(function(){
+				$.dialog();
+			})
+			$('.btn2').click(function(){
+				$.dialog({
+					type:'warning',
+					btnText:'两秒后关闭',
+					delay:2000
+				});
+			})
+			$('.btn3').click(function(){
+				$.dialog({
+					type:'finish',
+					btnText:'两秒后关闭',
+					buttons:[{
+						text:'确认',
+					},{
+						text:'取消',
+					}]
+				});
+			})
+			$('.btn4').click(function(){
+				$.dialog({
+					type:'warning',
+					btnText:'我是警告框',
+					buttons:[{
+						type:'red',
+						text:'确认',
+						callback:function(){
+							alert('警告，点击我不会关闭');
+							return false;
+						}
+					}]
+					
+				});
+			})
+			$('.btn5').click(function(){
+				$.dialog({
+					type:'finish',
+					btnText:'请谨慎选择',
+					buttons:[{
+						type:'red',
+						text:'确认',
+						callback:function(){
+							alert('是否真的选择当前选项');
+						}
+					},{
+						type:'green',
+						text:'取消',
+						callback:function(){
+							alert('取消当前选项的选择');
+							return false;
+						}
+					},{
+						type:'',
+						text:'待定',
+						callback:function(){
+							alert('有待考虑');
+						}
+					}
+					]
+					
+				});
+			})
+			
+			$('.btn6').click(function(){
+				var ddd=$.dialog({
+					btnText:'是否确认当前选择',
+					buttons:[{
+						type:'red',
+						text:'确认',
+						callback:function(){
+							$.dialog({
+								btnText:'2s后自动删除',
+								delay:2000
+							})
+							return false;
+						}
+					},{
+						type:'green',
+						text:'取消',
+						callback:function(){
+							alert('点击取消不是回调函数关闭，而是调用自身的close方法来关闭的');
+							$.dialog({
+								buttons:[
+								{text:'删除之前的框',
+								type:'red',
+								callback:function(){
+									ddd.close();
+									return false;
+								}
+								}]
+							})
+//							ddd.close();
+							return false;
+						}
+					}
+					]
+					
+				});
+			})
+		</script>
+	</body>
+</html>
